@@ -6,7 +6,6 @@ Developed an interactive Quiz Application using Java, Swing Framework, and JDBC,
 The application allows users to attempt quizzes with various customizable options. It supports Excel data import for question management via Java I/O, enabling administrators to easily update and manage the question pool without modifying the codebase.
 
 Key features implemented:
-
 Excel Integration:Import quiz questions directly from Excel sheets using Java I/O for flexible question management.
 
 Random Question Selection: Each quiz fetches a randomized set of questions from the imported data.
@@ -26,6 +25,6 @@ How to Run:
 4. Import the provided Excel file or prepare your own in the expected format.
 5. Run the application.
 
-References
+References:
 Research papers on quiz application development
 Java Swing and JDBC documentation
