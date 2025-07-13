@@ -1,0 +1,72 @@
+package quiz.application;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class Admin {
+
+    private static final String QUESTIONS_FILE = "questions.dat";
+
+    // Load questions from Excel file
+    public static List<Question> loadQuestionsFromExcel(File file) {
+        List<Question> questions = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // Assuming questions are in the first sheet
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header row
+
+                String questionText = getCellValue(row.getCell(0));
+                String option1 = getCellValue(row.getCell(1));
+                String option2 = getCellValue(row.getCell(2));
+                String option3 = getCellValue(row.getCell(3));
+                String option4 = getCellValue(row.getCell(4));
+                String correctAnswer = getCellValue(row.getCell(5));
+
+                questions.add(new Question(questionText, option1, option2, option3, option4, correctAnswer));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return questions;
+    }
+
+    // Helper method to get cell value (handles both numeric and string types)
+    private static String getCellValue(Cell cell) {
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return "";
+        }
+    }
+
+    // Save the questions to a file for persistence
+    public static void saveQuestions(List<Question> questions) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(QUESTIONS_FILE))) {
+            out.writeObject(questions);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Load the questions from the saved file
+    public static List<Question> getQuestions() {
+        List<Question> questions = new ArrayList<>();
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(QUESTIONS_FILE))) {
+            questions = (List<Question>) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return questions;
+    }
+}
