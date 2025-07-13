@@ -1,0 +1,27 @@
+package quiz.application;
+
+import javax.swing.*;
+
+public class Score extends JFrame {
+    public Score(String studentName, int score) {
+        setTitle("Quiz Score");
+        setSize(300, 200);
+        setLayout(null);
+
+        JLabel nameLabel = new JLabel("Student: " + studentName);
+        nameLabel.setBounds(50, 30, 200, 30);
+        add(nameLabel);
+
+        JLabel scoreLabel = new JLabel("Score: " + score);
+        scoreLabel.setBounds(50, 70, 200, 30);
+        add(scoreLabel);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(100, 120, 80, 30);
+        exitButton.addActionListener(e -> System.exit(0));
+        add(exitButton);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+}
