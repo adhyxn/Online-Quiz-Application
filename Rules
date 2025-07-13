@@ -1,0 +1,59 @@
+package quiz.application;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Rules extends JFrame {
+    private String studentName;
+    private JTextField sapIdField;
+    private JButton startButton;
+
+    public Rules(String studentName) { // Constructor now accepts studentName
+        this.studentName = studentName;
+
+        setTitle("Welcome to the Quiz");
+        setSize(400, 250);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel heading = new JLabel("Enter Your SAP ID");
+        heading.setFont(new Font("Tahoma", Font.BOLD, 18));
+        heading.setBounds(100, 20, 200, 30);
+        add(heading);
+
+        // SAP ID Label and Field
+        JLabel sapIdLabel = new JLabel("SAP ID:");
+        sapIdLabel.setBounds(50, 70, 100, 30);
+        add(sapIdLabel);
+
+        sapIdField = new JTextField();
+        sapIdField.setBounds(150, 70, 180, 30);
+        add(sapIdField);
+
+        // Start Button
+        startButton = new JButton("Start Quiz");
+        startButton.setBounds(150, 120, 120, 30);
+        add(startButton);
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sapId = sapIdField.getText().trim();
+
+                if (sapId.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter your SAP ID!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!sapId.matches("\\d{9}")) {
+                    JOptionPane.showMessageDialog(null, "SAP ID must be a 9-digit number!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // Proceed to Quiz
+                    new Quiz(studentName, sapId).setVisible(true);
+                    dispose();
+                }
+            }
+        });
+
+        setVisible(true);
+    }
+}
