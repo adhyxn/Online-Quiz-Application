@@ -1,0 +1,53 @@
+package quiz.application;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Main extends JFrame {
+
+    // Constructor for the Main class
+    public Main() {
+        setTitle("Quiz Application");
+        setSize(400, 300);
+        setLocationRelativeTo(null); // Center the window
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create buttons for Admin and Student login
+        JButton adminLoginButton = new JButton("Admin Login");
+        JButton studentLoginButton = new JButton("Student Login");
+
+        // Set up the layout
+        setLayout(new GridLayout(2, 1));
+        add(adminLoginButton);
+        add(studentLoginButton);
+
+        // Action listeners for buttons
+        adminLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AdminLogin().setVisible(true);
+                dispose(); // Close the main menu window
+            }
+        });
+
+        studentLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new StudentLogin().setVisible(true);
+                dispose(); // Close the main menu window
+            }
+        });
+    }
+
+    // Main method to launch the application
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Main().setVisible(true);
+            }
+        });
+    }
+}
