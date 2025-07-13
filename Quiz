@@ -1,0 +1,142 @@
+package quiz.application;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+public class Quiz extends JFrame {
+    private JLabel questionLabel, remainingQuestionsLabel;
+    private JRadioButton option1Radio, option2Radio, option3Radio, option4Radio;
+    private ButtonGroup optionsGroup;
+    private JButton nextButton, submitButton;
+    private int currentQuestionIndex = 0;
+    private int score = 0;
+    private List<Question> questions;
+    private String studentName, sapId;
+
+    public Quiz(String studentName, String sapId) {
+        this.studentName = studentName;
+        this.sapId = sapId;
+        questions = Admin.getQuestions(); // Load questions from Admin class
+
+        // Set up JFrame
+        setTitle("Quiz Application");
+        setSize(500, 350);
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Top Panel: Remaining Questions Display
+        remainingQuestionsLabel = new JLabel("Remaining Questions: " + (questions.size() - currentQuestionIndex));
+        remainingQuestionsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(remainingQuestionsLabel, BorderLayout.NORTH);
+
+        // Center Panel: Question and Options
+        JPanel questionPanel = new JPanel();
+        questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
+
+        questionLabel = new JLabel("", SwingConstants.CENTER);
+        questionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        questionPanel.add(questionLabel);
+
+        option1Radio = new JRadioButton("");
+        option2Radio = new JRadioButton("");
+        option3Radio = new JRadioButton("");
+        option4Radio = new JRadioButton("");
+
+        optionsGroup = new ButtonGroup();
+        optionsGroup.add(option1Radio);
+        optionsGroup.add(option2Radio);
+        optionsGroup.add(option3Radio);
+        optionsGroup.add(option4Radio);
+
+        questionPanel.add(option1Radio);
+        questionPanel.add(option2Radio);
+        questionPanel.add(option3Radio);
+        questionPanel.add(option4Radio);
+        add(questionPanel, BorderLayout.CENTER);
+
+        // Bottom Panel: Buttons
+        JPanel buttonPanel = new JPanel();
+        nextButton = new JButton("Next");
+        submitButton = new JButton("Submit Test");
+
+        buttonPanel.add(nextButton);
+        buttonPanel.add(submitButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Display the first question
+        displayQuestion(currentQuestionIndex);
+
+        // Next Button Action
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                processAnswer();
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.size()) {
+                    displayQuestion(currentQuestionIndex);
+                } else {
+                    showFinalScore();
+                }
+            }
+        });
+
+        // Submit Button Action
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int remaining = questions.size() - currentQuestionIndex - 1;
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "Warning: " + remaining + " questions are remaining. Do you want to submit?",
+                        "Confirm Submit", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    showFinalScore();
+                }
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void displayQuestion(int index) {
+        Question currentQuestion = questions.get(index);
+        questionLabel.setText("Q" + (index + 1) + ": " + currentQuestion.getQuestionText());
+        option1Radio.setText(currentQuestion.getOption1());
+        option2Radio.setText(currentQuestion.getOption2());
+        option3Radio.setText(currentQuestion.getOption3());
+        option4Radio.setText(currentQuestion.getOption4());
+        optionsGroup.clearSelection();
+
+        // Update Remaining Questions Display
+        remainingQuestionsLabel.setText("Remaining Questions: " + (questions.size() - currentQuestionIndex - 1));
+    }
+
+    private void processAnswer() {
+        String selectedAnswer = getSelectedAnswer();
+        if (selectedAnswer != null && selectedAnswer.equals(questions.get(currentQuestionIndex).getCorrectAnswer())) {
+            score++;
+        }
+    }
+
+    private String getSelectedAnswer() {
+        if (option1Radio.isSelected()) return option1Radio.getText();
+        if (option2Radio.isSelected()) return option2Radio.getText();
+        if (option3Radio.isSelected()) return option3Radio.getText();
+        if (option4Radio.isSelected()) return option4Radio.getText();
+        return null;
+    }
+
+    private void showFinalScore() {
+        JOptionPane.showMessageDialog(this, "Name: " + studentName +
+                        "\nSAP ID: " + sapId +
+                        "\nYour score: " + score + "/" + questions.size(),
+                "Quiz Complete", JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    }
+
+    public static void main(String[] args) {
+        new Quiz("Student Name", "123456789"); // Example
+    }
+}
