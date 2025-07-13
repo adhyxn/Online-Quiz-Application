@@ -27,5 +27,4 @@ How to Run:
 5. Run the application.
 
 References:
-Research papers on quiz application development
-Java Swing and JDBC documentation
+Research papers on quiz application development and Java Swing and JDBC documentation
