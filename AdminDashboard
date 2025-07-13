@@ -1,0 +1,60 @@
+package quiz.application;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.List;
+
+public class AdminDashboard extends JFrame {
+    private JTextArea questionsText;
+    private JButton loadButton;
+
+    public AdminDashboard() {
+        // Set up the JFrame
+        setTitle("Admin Dashboard");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        questionsText = new JTextArea();
+        loadButton = new JButton("Load Questions");
+
+        // Layout configuration
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        add(new JScrollPane(questionsText));
+        add(loadButton);
+
+        // Action listener for the Load button
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open file chooser for selecting the Excel file
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Choose Excel File");
+                int result = fileChooser.showOpenDialog(AdminDashboard.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    List<Question> questions = Admin.loadQuestionsFromExcel(file);
+
+                    // Save the questions to file for persistence
+                    Admin.saveQuestions(questions);
+
+                    // Display the loaded questions in the JTextArea
+                    questionsText.setText("");  // Clear previous content
+                    for (Question question : questions) {
+                        questionsText.append(question.getQuestionText() + "\n");
+                        questionsText.append("1. " + question.getOption1() + "\n");
+                        questionsText.append("2. " + question.getOption2() + "\n");
+                        questionsText.append("3. " + question.getOption3() + "\n");
+                        questionsText.append("4. " + question.getOption4() + "\n");
+                        questionsText.append("Correct Answer: " + question.getCorrectAnswer() + "\n\n");
+                    }
+                }
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new AdminDashboard().setVisible(true));
+    }
+}
